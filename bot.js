@@ -5,19 +5,24 @@ var config = new require('./config');
 
 var T = new Twit(config);
 
-var params = {
-	status: 'hello world!'
-}
+tweetIt();
+setInterval(tweetIt, 1000*60*60*6);
 
-//
-//  tweet 'hello world!'
-//
-T.post('statuses/update', params, getData);
+function tweetIt() {
+	var params = {
+		status: 'hello world!'
+	}
 
-function getData(err, data, response) {
-	if (err) {
-		console.log("Something went wrong!");
-	} else {
-		console.log("It worked!");
+	//
+	//  tweet 'hello world!'
+	//
+	T.post('statuses/update', params, getData);
+
+	function getData(err, data, response) {
+		if (err) {
+			console.log("Something went wrong!");
+		} else {
+			console.log("It worked!");
+		}
 	}
 }
