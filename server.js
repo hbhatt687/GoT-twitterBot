@@ -1,10 +1,20 @@
   
-  var fs = require('fs');
+//
+// This is the file that looks at wikiquote daily and grabs a quote
+// for the GoT twitter bot to post.
+//
+// @author Harsh Bhatt
 
-  var request = require("request"),
-  cheerio = require("cheerio"),
-  url = "https://en.wikiquote.org/wiki/A_Song_of_Ice_and_Fire";
-  
+// The required packages and libraries.
+var fs = require('fs');
+var request = require("request"),
+cheerio = require("cheerio"),
+url = "https://en.wikiquote.org/wiki/A_Song_of_Ice_and_Fire";
+
+//
+// This makes a connection with the wikiequotes website and
+// recieves a quote [based on index ? still need to figure this out..]
+//
 request(url, function (error, response, body) {
   if (!error) {
     var $ = cheerio.load(body);
@@ -14,13 +24,13 @@ request(url, function (error, response, body) {
     var quote;
     var json = {quote : ""};
 
-    $( "div.mw-parser-output ul" ).each(function( INDEX ) {
+    $( "div.mw-parser-output ul" ).filter(function( INDEX ) {
     
     if (INDEX % 2 == 0 && (INDEX > 2) && (INDEX < 360)) {
       quote = $( this ).text();   
+      json.quote = quote;
        }
 
-       json.quote = quote;
 
     });
 
@@ -29,6 +39,9 @@ request(url, function (error, response, body) {
     console.log("We’ve encountered an error: " + error);
   }
 
+  //
+  // Write our quotes out to a JSON file.
+  //
   fs.writeFile('output.json', JSON.stringify(json, null, 4).replace(/\\n/g, " "), function(err){
 
     console.log('File successfully written! - Check your project directory for the output.json file');
