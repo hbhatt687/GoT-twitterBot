@@ -22,7 +22,7 @@ var exec = require('child_process').exec;
 
 // post a tweet once a day
 tweetIt();
-setInterval(tweetIt, 1000*60*60*24);
+setInterval(tweetIt, 1000*20);
 
 function tweetIt() {
 	//
@@ -31,6 +31,7 @@ function tweetIt() {
 	//
 	var cmd = 'node server.js';
 	exec(cmd, server);
+	setTimeout(tweetIt, 1000*10);
 	function server() {
 	console.log('server is scrapping');
 	}

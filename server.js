@@ -11,6 +11,8 @@ var request = require("request"),
 cheerio = require("cheerio"),
 url = "https://en.wikiquote.org/wiki/A_Song_of_Ice_and_Fire";
 
+var quoteIndex = require('./indexHandler');
+
 //
 // This makes a connection with the wikiequotes website and
 // recieves a quote [based on index ? still need to figure this out..]
@@ -18,15 +20,13 @@ url = "https://en.wikiquote.org/wiki/A_Song_of_Ice_and_Fire";
 request(url, function (error, response, body) {
   if (!error) {
     var $ = cheerio.load(body);
-
-    var INDEX = 4;
     
     var quote;
     var json = {quote : ""};
 
     $( "div.mw-parser-output ul" ).filter(function( INDEX ) {
     
-    if (INDEX % 2 == 0 && (INDEX > 2) && (INDEX < 360)) {
+    if (INDEX % 2 == 0 && (INDEX == quoteIndex.index)) {
       quote = $( this ).text();   
       json.quote = quote;
        }
@@ -47,6 +47,8 @@ request(url, function (error, response, body) {
     console.log('File successfully written! - Check your project directory for the output.json file');
 
   })
+
+  quoteIndex.index = quoteIndex.index + 2;
 
 });
 
