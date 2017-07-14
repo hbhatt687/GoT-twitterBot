@@ -15,13 +15,13 @@ var fs = require('fs');
 var Twit = require('twit');
 var config = new require('./config');
 var T = new Twit(config);
-var exec = require('child_process').exec;
+
+var quoteIndex = 6;
 
 
 // QUOTE code
 
 // post a tweet once a day
-tweetIt();
 setInterval(tweetIt, 1000*20);
 
 function tweetIt() {
@@ -29,12 +29,10 @@ function tweetIt() {
 	// This will start looking for quotes to post
 	// It will put the quote in a JSON file
 	//
-	var cmd = 'node server.js';
-	exec(cmd, server);
-	setTimeout(tweetIt, 1000*10);
-	function server() {
-	console.log('server is scrapping');
-	}
+	quoteIndex = quoteIndex + 2;
+	console.log('value of index: ' + quoteIndex)
+	server(quoteIndex);
+
 
 	var quoteFile = require('./output.json');
 
@@ -48,11 +46,49 @@ function tweetIt() {
 
 	function getData(err, data, response) {
 		if (err) {
-			console.log("Something went wrong!");
+			console.log("Something went wrong!: " + err);
+			console.log("quote: " + quoteFile.quote)
 		} else {
 			console.log("Tweeted something!");
 		}
 	}
+}
+
+function server(quoteNumber) {
+	// The required packages and libraries.
+	var fs = require('fs');
+	var request = require("request"),
+	cheerio = require("cheerio"),
+	url = "https://en.wikiquote.org/wiki/A_Song_of_Ice_and_Fire";
+
+	//
+	// This makes a connection with the wikiequotes website and
+	// recieves a quote based on quoteNumber parameter.
+	//
+	request(url, function (error, response, body) {
+	  if (!error) {
+	    var $ = cheerio.load(body);
+	    
+	    var quote;
+	    var json = {quote : ""};
+
+	    $( "div.mw-parser-output ul" ).filter(function( INDEX ) {
+		    if (INDEX % 2 == 0 && (INDEX == quoteNumber)) {
+		      quote = $( this ).text();   
+		      json.quote = quote;
+		     }
+	    });
+	  } else {
+	    console.log("We’ve encountered an error: " + error);
+	  }
+
+	  //
+	  // Write our quotes out to a JSON file.
+	  //
+	  fs.writeFile('output.json', JSON.stringify(json, null, 4).replace(/\\n/g, " "), function(err){
+	    console.log('File successfully written! - Check your project directory for the output.json file');
+	  })
+	});
 }
 
 // FOllOW code
