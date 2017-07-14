@@ -18,7 +18,6 @@ var T = new Twit(config);
 
 var quoteIndex = 6;
 
-
 // QUOTE code
 
 // post a tweet once a day
@@ -33,7 +32,6 @@ function tweetIt() {
 	console.log('value of index: ' + quoteIndex)
 	server(quoteIndex);
 
-
 	var quoteFile = require('./output.json');
 
 	// Read from JSON file for the quote
@@ -41,13 +39,14 @@ function tweetIt() {
 		status: quoteFile.quote
 	}
 
+	console.log("quote: " + quoteFile.quote)
+
 	//  tweet a quote
 	T.post('statuses/update', params, getData);
 
 	function getData(err, data, response) {
 		if (err) {
 			console.log("Something went wrong!: " + err);
-			console.log("quote: " + quoteFile.quote)
 		} else {
 			console.log("Tweeted something!");
 		}
@@ -62,7 +61,7 @@ function server(quoteNumber) {
 	url = "https://en.wikiquote.org/wiki/A_Song_of_Ice_and_Fire";
 
 	//
-	// This makes a connection with the wikiequotes website and
+	// This makes a connection with the wikiquotes website and
 	// recieves a quote based on quoteNumber parameter.
 	//
 	request(url, function (error, response, body) {
