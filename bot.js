@@ -6,17 +6,18 @@
 //
 // @author Harsh Bhatt
 
-console.log('the bot is starting');
-
 //
 // These are the required libraries and folders needed to run the bot
 //
-var fs = require('fs');
 var Twit = require('twit');
 var config = new require('./config');
 var T = new Twit(config);
+var fs = require('fs');
+var request = require("request");
+var	cheerio = require("cheerio");
+var	url = "https://en.wikiquote.org/wiki/A_Song_of_Ice_and_Fire";
+var quoteIndex = 8;
 
-var quoteIndex = 6;
 
 // QUOTE code
 
@@ -26,40 +27,39 @@ setInterval(tweetIt, 1000*20);
 function tweetIt() {
 	//
 	// This will start looking for quotes to post
-	// It will put the quote in a JSON file
+	// It will increment the quoteIndex by 2 because
+	// that is where the relavent quotes are located on the website.
 	//
 	quoteIndex = quoteIndex + 2;
-	console.log('value of index: ' + quoteIndex)
 	server(quoteIndex);
 
-	var quoteFile = require('./output.json');
+	//
+	// Read the quote from the JSON file and post the quote.
+	///
+	fs.readFile('./output.json', function(err, data) {
+		if (err) throw err;
 
-	// Read from JSON file for the quote
-	var params = {
-		status: quoteFile.quote
-	}
+		// Read from JSON file for the quote
+		var quote = JSON.parse(data);
 
-	console.log("quote: " + quoteFile.quote)
-
-	//  tweet a quote
-	T.post('statuses/update', params, getData);
-
-	function getData(err, data, response) {
-		if (err) {
-			console.log("Something went wrong!: " + err);
-		} else {
-			console.log("Tweeted something!");
+		var params = {
+			status: quote.quote
 		}
-	}
+
+		//  tweet a quote
+		T.post('statuses/update', params, getData);
+
+		function getData(err, data, response) {
+			if (err) {
+				console.log("Something went wrong!: " + err);
+			} else {
+				console.log("Tweeted something!");
+			}
+		}
+	})
 }
 
 function server(quoteNumber) {
-	// The required packages and libraries.
-	var fs = require('fs');
-	var request = require("request"),
-	cheerio = require("cheerio"),
-	url = "https://en.wikiquote.org/wiki/A_Song_of_Ice_and_Fire";
-
 	//
 	// This makes a connection with the wikiquotes website and
 	// recieves a quote based on quoteNumber parameter.
@@ -84,9 +84,7 @@ function server(quoteNumber) {
 	  //
 	  // Write our quotes out to a JSON file.
 	  //
-	  fs.writeFile('output.json', JSON.stringify(json, null, 4).replace(/\\n/g, " "), function(err){
-	    console.log('File successfully written! - Check your project directory for the output.json file');
-	  })
+	  fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){})
 	});
 }
 
