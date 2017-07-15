@@ -22,7 +22,7 @@ var quoteIndex = 8;
 // QUOTE code
 
 // post a tweet once a day
-setInterval(tweetIt, 1000*20);
+setInterval(tweetIt, 1000*60*60*24);
 
 function tweetIt() {
 	//
