@@ -1,7 +1,7 @@
 # GoT-twitterBot
 This is a twitter bot that posts quotes from a Song of Ice and Fire series. The bot scans the wikiquotes web page for Game of Thrones and selects one quote every 24 hours to post on twitter. 
 
-**The current verison of the bot is NOT live at: https://twitter.com/GoT_fanBot**
+**The current verison of the bot is live at: https://twitter.com/GoT_fanBot**
 ## Getting Started
 If you wanted to run this on your local system, these steps will be of use to you. Download all of the files in the repo and follow these steps.
 ### Prerequisites
