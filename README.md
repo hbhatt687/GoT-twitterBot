@@ -32,7 +32,7 @@ To run the bot simply type
 node bot.js
 ```
 ## Deployment
-Deployed the bot v1.0 using Heroku. 
+Deployed the bot v1.0 using Amazon EC2. 
 
 The bot is live [@GoT_fanBot](https://twitter.com/GoT_fanBot). 
 
